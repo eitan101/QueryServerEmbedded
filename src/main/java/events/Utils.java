@@ -17,14 +17,14 @@ import java.util.function.Predicate;
  */
 public class Utils {
 
-    public static <V> Function<Pair<V, V>, ChangeEvent<V>> kk(Predicate<V> p) {
-        return (Pair<V, V> t) -> {
-            boolean first = t.getFirst() != null && p.test(t.getFirst());
-            boolean second = t.getSecond() != null && p.test(t.getSecond());
-            if (first && !second)
-                return new ChangeEvent(ChangeEvent.ChangeType.delete, t.getFirst());
-            if (!first && second)
-                return new ChangeEvent(ChangeEvent.ChangeType.update, t.getSecond());
+    public static <V> Function<ChangePair<V>, ChangeEvent<V>> PairToChangeEvent(Predicate<V> p) {
+        return t -> {
+            boolean old = t.getOld()!= null && p.test(t.getOld());
+            boolean newVal = t.getNew()!= null && p.test(t.getNew());
+            if (old && !newVal)
+                return new ChangeEvent(ChangeEvent.ChangeType.delete, t.getOld());
+            if (!old && newVal)
+                return new ChangeEvent(ChangeEvent.ChangeType.update, t.getNew());
             return null;
         };
     }

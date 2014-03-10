@@ -12,7 +12,6 @@ import db.infra.ChangeEvent;
 import db.infra.Denormalizer;
 import events.EventsStream;
 import java.util.concurrent.ExecutorService;
-import java.util.concurrent.ScheduledThreadPoolExecutor;
 
 /**
  *
@@ -32,14 +31,16 @@ public class QueryServer {
     }
 
     
-    public void start() {
+    public QueryServer start() {
         final CacheData<Integer, Pm> pmCache = new CacheData<>(pmOuput, exec).start();
         final CacheData<Integer, Target> targetCache = new CacheData<>(tgtOuput, exec).start();
         denormlizedPm = new Denormalizer<>(pmCache, targetCache, pm -> pm.getTargetId()).start();
+        return this;
     }
 
-    public void stop() {
+    public QueryServer stop() {
         exec.shutdownNow();
+        return this;
     }
 
     public Denormalizer<Integer, Pm, Integer, Target> getDenormlizedPm() {

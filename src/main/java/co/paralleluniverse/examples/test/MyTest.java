@@ -6,7 +6,6 @@
 package co.paralleluniverse.examples.test;
 
 import java.io.IOException;
-import java.util.Arrays;
 import java.util.concurrent.ScheduledThreadPoolExecutor;
 import org.codehaus.jackson.map.ObjectMapper;
 import queryserver.DataSimultor;

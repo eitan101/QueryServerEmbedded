@@ -30,7 +30,7 @@ public class MyServletContextListener implements ServletContextListener {
         qs.start();
         ds.start();
         stream =  qs.getDenormlizedPm().output().
-                map(Utils.kk(p -> p.getFirst()!=null && p.getSecond()!=null && 
+                map(Utils.PairToChangeEvent(p -> p.getFirst()!=null && p.getSecond()!=null && 
                         p.getSecond().getName().length()==4)).
 //                map(Utils.kk(p -> p.getFirst()!=null && p.getSecond()!=null)).
                 filter(p -> p != null);
