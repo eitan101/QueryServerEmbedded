@@ -4,7 +4,6 @@
  * and open the template in the editor.
  */
 
-import com.google.common.collect.ImmutableMap;
 import com.google.common.util.concurrent.MoreExecutors;
 import db.data.Pm;
 import db.data.Target;
@@ -25,7 +24,7 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import static org.junit.Assert.*;
-import queryserver.QueryServer;
+import queryserver.QueryServerExample;
 
 /**
  *
@@ -55,14 +54,12 @@ public class DenormalizedQueryTest {
         res = new ArrayList<>();
         pmPublisher = new PushStream<>();
         tgtPublisher = new PushStream<>();
-        QueryServer qs = new QueryServer(exec, pmPublisher, tgtPublisher).start();
-        final EventsStream<ChangePair<DenormalizedEntity<Pm>>> output = qs.getDenormlizedPm().output();
-        final EventsStream<ChangeEvent<DenormalizedEntity<Pm>>> map = output.
+        QueryServerExample qs = new QueryServerExample(exec, pmPublisher, tgtPublisher).start();
+        queryOutput = qs.getDenormlizedPm().output().
                 map(Utils.PairToChangeEvent(p ->
                         p.getParentEntity()!= null &&
-                                p.getSubEntity(Target.class, "target") != null &&
-                                p.getSubEntity(Target.class, "target").getName().length() == 4));
-        queryOutput = map.
+                        p.getSubEntity(Target.class, "target") != null &&
+                        p.getSubEntity(Target.class, "target").getName().length() == 4)).
                 filter(p -> p != null);
     }
 

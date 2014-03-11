@@ -11,7 +11,7 @@ import java.util.function.Consumer;
  * @param <K>
  * @param <V>
  */
-public class CacheData<K, V extends Indexed<K>> {
+public class CacheData<K, V extends Indexed<K>> implements IReadCache<K,V> {
 
     ConcurrentHashMap<K, V> map;
     PushStream<Pair<V, V>> output;
@@ -59,11 +59,14 @@ public class CacheData<K, V extends Indexed<K>> {
     }
 
 
+    @Override
     public EventsStream<Pair<V, V>> getOutput() {
         return output.registerThrough();
     }
-    
+
+    @Override
     public V get(K key) {
         return map.get(key);
     }
+
 }

@@ -8,7 +8,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
 import javax.servlet.annotation.WebListener;
-import queryserver.QueryServer;
+import queryserver.QueryServerExample;
 
 @WebListener
 public class MyServletContextListener implements ServletContextListener {
@@ -19,7 +19,7 @@ public class MyServletContextListener implements ServletContextListener {
     public void contextInitialized(ServletContextEvent sce) {
         ScheduledThreadPoolExecutor exec = new ScheduledThreadPoolExecutor(1);
         DataSimultor ds = new DataSimultor(exec);
-        QueryServer qs = new QueryServer(exec,ds.getPmOuput(),ds.getTgtOuput());
+        QueryServerExample qs = new QueryServerExample(exec,ds.getPmOuput(),ds.getTgtOuput());
         qs.start();
         ds.start();
 //        stream =  qs.getDenormlizedPm().output().

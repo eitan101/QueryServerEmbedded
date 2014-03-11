@@ -9,7 +9,7 @@ import java.io.IOException;
 import java.util.concurrent.ScheduledThreadPoolExecutor;
 import org.codehaus.jackson.map.ObjectMapper;
 import queryserver.DataSimultor;
-import queryserver.QueryServer;
+import queryserver.QueryServerExample;
 
 /**
  *
@@ -21,7 +21,7 @@ public class MyTest {
         ObjectMapper mapper = new ObjectMapper();
         final ScheduledThreadPoolExecutor exec = new ScheduledThreadPoolExecutor(1);
         DataSimultor ds = new DataSimultor(exec);
-        QueryServer qs = new QueryServer(exec, ds.getPmOuput(), ds.getTgtOuput());
+        QueryServerExample qs = new QueryServerExample(exec, ds.getPmOuput(), ds.getTgtOuput());
         qs.start();
 
 //        qs.getDenormlizedPm().output().register(p -> {

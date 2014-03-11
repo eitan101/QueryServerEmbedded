@@ -19,13 +19,13 @@ import java.util.stream.Collectors;
  */
 public class Denormalizer<K, V extends Indexed<K>> {
 
-    private final CacheData<K, V> parentCache;
+    private final IReadCache<K, V> parentCache;
     private final StreamRegisterer<ChangePair<DenormalizedEntity<V>>> output;
     private final PushStream<ChangePair<DenormalizedEntity<V>>> childChangeOuput;
     private final Function<V, DenormalizedEntity<V>> denormFunction;
     private final List<ChildHandler> childHandlers;
 
-    public Denormalizer(CacheData<K, V> parentCache, ImmutableCollection<SubEntityDef> subEntitiesDefs) {
+    public Denormalizer(IReadCache<K, V> parentCache, ImmutableCollection<SubEntityDef> subEntitiesDefs) {
 
         this.parentCache = parentCache;
         this.childChangeOuput = new PushStream<>();
@@ -68,7 +68,7 @@ public class Denormalizer<K, V extends Indexed<K>> {
 
         private final Index<K, V, K2> index;
         private final Consumer<Pair<V2, V2>> childChangeInput;
-        private final CacheData<K2, V2> childCache;
+        private final IReadCache<K2, V2> childCache;
 
         public ChildHandler(SubEntityDef<V, K2, V2> def) {
             this.childCache = def.cache;
@@ -98,10 +98,10 @@ public class Denormalizer<K, V extends Indexed<K>> {
 
         final String name;
         final Class<? extends V2> c;
-        final CacheData<K2, V2> cache;
+        final IReadCache<K2, V2> cache;
         final Function<V, K2> indexer;
 
-        public SubEntityDef(String name, Class<? extends V2> c, CacheData<K2, V2> cache, Function<V, K2> indexer) {
+        public SubEntityDef(String name, Class<? extends V2> c, IReadCache<K2, V2> cache, Function<V, K2> indexer) {
             this.name = name;
             this.c = c;
             this.cache = cache;

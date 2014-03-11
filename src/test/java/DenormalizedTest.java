@@ -25,7 +25,7 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import static org.junit.Assert.*;
-import queryserver.QueryServer;
+import queryserver.QueryServerExample;
 
 /**
  *
@@ -55,7 +55,7 @@ public class DenormalizedTest {
         res = new ArrayList<>();
         pmPublisher = new PushStream<>();
         tgtPublisher = new PushStream<>();
-        QueryServer qs = new QueryServer(exec, pmPublisher, tgtPublisher).start();       
+        QueryServerExample qs = new QueryServerExample(exec, pmPublisher, tgtPublisher).start();       
         queryOutput = qs.getDenormlizedPm().output();
     }
 

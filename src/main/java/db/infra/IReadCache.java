@@ -4,13 +4,12 @@
  * and open the template in the editor.
  */
 
-package queryserver;
+package db.infra;
 
-/**
- *
- * @author handasa
- */
-public class QueryServer<V> {
-    
-    
+import events.EventsStream;
+import events.Pair;
+
+public interface IReadCache<K,V> {
+    V get(K k);
+    EventsStream<Pair<V, V>> getOutput();
 }
