@@ -6,48 +6,37 @@
 
 package events;
 
+import com.google.common.collect.ImmutableMap;
 import java.util.HashMap;
-import java.util.Map;
-import java.util.Objects;
-
+    
 public class DenormalizedEntity<V> {
-    V entity;
-    Map<ClassAndName,Object> subEntities;    
+    V parentEntity;
+    ImmutableMap<String,Object> subEntities;    
 
-    public DenormalizedEntity(V entity, SubEntityBuilder subEntities) {
-        this.entity = entity;
-        this.subEntities = subEntities.build();
+    public DenormalizedEntity(V entity, ImmutableMap<String,Object> subEntities) {
+        this.parentEntity = entity;
+        this.subEntities = subEntities;
+//        this.subEntities = ImmutableMap.copyOf(subEntities.entrySet().stream().
+//                collect(Collectors.toMap(sub->new ClassAndName<>(sub.getValue().getClass(),sub.getKey()), sub->sub.getValue())));
     }
 
-    public V getEntity() {
-        return entity;
+    public V getParentEntity() {
+        return parentEntity;
     }
     
     public <T> T getSubEntity(Class<? extends T> c,String name) {
-        final T obj = (T) subEntities.get(new ClassAndName<>(c,name));
+        final T obj = (T) subEntities.get(name);
         if (obj==null)
             throw new RuntimeException("no subentity of type "+c.getName()+" in "+this);        
         return obj;
     }
     
-    
-    public static class SubEntityBuilder {
-        Map<ClassAndName,Object> map;
-
-        public SubEntityBuilder() {
-            map = new HashMap<>();            
-        }
-        
-        public <T> SubEntityBuilder add(T o, String name) {
-            map.put(new ClassAndName<>(o.getClass(), name), o);
-            return this;            
-        }
-        
-        private Map<ClassAndName,Object> build() {
-            return new HashMap<>(map);            
-        }
+    public DenormalizedEntity<V> replace(String subEntityName, Object subEntity) {
+        HashMap<String, Object> map = new HashMap<>(subEntities);
+        map.put(subEntityName, subEntity);
+        return new DenormalizedEntity<>(parentEntity,ImmutableMap.copyOf(map));
     }
-    
+/*       
     static class ClassAndName<T> {
         Class<? extends T> c;
         String name;
@@ -82,11 +71,11 @@ public class DenormalizedEntity<V> {
             }
             return true;
         }        
-
         @Override
         public String toString() {
             return "ClassAndName{" + "c=" + c + ", name=" + name + '}';
         }        
     }
+*/
     
 }

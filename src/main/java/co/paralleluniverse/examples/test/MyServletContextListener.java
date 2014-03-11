@@ -1,14 +1,7 @@
 package co.paralleluniverse.examples.test;
 
 import queryserver.DataSimultor;
-import db.infra.CacheData;
-import db.infra.ChangeEvent;
-import db.data.Pm;
-import db.data.Target;
-import db.infra.Denormalizer;
 import events.EventsStream;
-import events.Pair;
-import events.Utils;
 import java.util.concurrent.ScheduledThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -29,11 +22,11 @@ public class MyServletContextListener implements ServletContextListener {
         QueryServer qs = new QueryServer(exec,ds.getPmOuput(),ds.getTgtOuput());
         qs.start();
         ds.start();
-        stream =  qs.getDenormlizedPm().output().
-                map(Utils.PairToChangeEvent(p -> p.getFirst()!=null && p.getSecond()!=null && 
-                        p.getSecond().getName().length()==4)).
-//                map(Utils.kk(p -> p.getFirst()!=null && p.getSecond()!=null)).
-                filter(p -> p != null);
+//        stream =  qs.getDenormlizedPm().output().
+//                map(Utils.PairToChangeEvent(p -> p.getFirst()!=null && p.getSecond()!=null && 
+//                        p.getSecond().getName().length()==4)).
+////                map(Utils.kk(p -> p.getFirst()!=null && p.getSecond()!=null)).
+//                filter(p -> p != null);
 
 //        registerLoadTesters();        
     }

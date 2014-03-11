@@ -24,13 +24,13 @@ public class MyTest {
         QueryServer qs = new QueryServer(exec, ds.getPmOuput(), ds.getTgtOuput());
         qs.start();
 
-        qs.getDenormlizedPm().output().register(p -> {
-            try {
-                System.out.println(mapper.writeValueAsString(p));
-            } catch (IOException ex) {
-                ex.printStackTrace();
-            }
-        });
+//        qs.getDenormlizedPm().output().register(p -> {
+//            try {
+//                System.out.println(mapper.writeValueAsString(p));
+//            } catch (IOException ex) {
+//                ex.printStackTrace();
+//            }
+//        });
         ds.start();
 
         Thread.sleep(2000);

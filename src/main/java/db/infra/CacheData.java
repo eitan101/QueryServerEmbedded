@@ -26,7 +26,9 @@ public class CacheData<K, V extends Indexed<K>> {
             public void register(Consumer<Pair<V, V>> c) {                
                 exec.execute(() -> {
                     System.out.println("registering by "+this);
-                    map.values().stream().forEach(v->c.accept(new Pair(null,v)));
+                    map.values().stream().forEach(
+                            v->c.accept(new Pair(null,v))
+                    );
                     super.register(c);
                 });
             }
