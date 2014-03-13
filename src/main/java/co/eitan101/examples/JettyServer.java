@@ -1,8 +1,6 @@
 package co.eitan101.examples;
 
-import db.data.Target;
 import events.Utils;
-import java.util.logging.ConsoleHandler;
 import javax.websocket.server.ServerContainer;
 import org.eclipse.jetty.server.Handler;
 
@@ -18,9 +16,9 @@ import org.eclipse.jetty.websocket.jsr356.server.deploy.WebSocketServerContainer
 public class JettyServer {
 
     public static void main(String[] args) {
-//        FullPmQueryServerExample.getPmQueryServer().put("default", pm->pm.getSubEntity(Target.class, "target").orElse(Target.empty).getName().startsWith("a"));
         FullPmQueryServerExample.getPmQueryServer().put("default", Utils.xpath("starts-with(subEntities/target/name,'f')"));
         runHttpServer(WsTest.class, "index.html");
+        System.out.println("open http://localhost:8080/files in browser console type connect()");
     }
 
     private static void runHttpServer(Class<WsTest> wsClass, String welcomeFile) {

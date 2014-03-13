@@ -1,11 +1,7 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
-package queryserver;
+package db.infra;
 
-import com.google.common.collect.ImmutableList;
+
+
 import db.data.Pm;
 import db.data.Target;
 import db.infra.CacheData;
@@ -14,10 +10,6 @@ import db.infra.Denormalizer;
 import events.EventsStream;
 import java.util.concurrent.ExecutorService;
 
-/**
- *
- * @author handasa
- */
 public class QueryServerExample {
 
     Denormalizer<Integer, Pm> denormlizedPm;
@@ -29,8 +21,8 @@ public class QueryServerExample {
         this.exec = exec;
         this.pmCache = new CacheData<>(pmOuput, exec);
         this.targetCache = new CacheData<>(tgtOuput, exec);     
-        this.denormlizedPm = new Denormalizer<>(pmCache, ImmutableList.of(
-                new Denormalizer.SubEntityDef<Pm, Integer, Target>("target", Target.class, targetCache, pm->pm.getTargetId())));        
+        this.denormlizedPm = new Denormalizer<>(pmCache, 
+                new Denormalizer.SubEntityDef<Pm, Integer, Target>("target", Target.class, targetCache, pm->pm.getTargetId()));        
     }
 
     

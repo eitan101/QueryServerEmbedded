@@ -1,6 +1,5 @@
 package co.eitan101.examples;
 
-//import com.cedarsoftware.util.io.JsonWriter;
 import java.io.IOException;
 import java.util.function.Consumer;
 import javax.websocket.CloseReason;
@@ -10,7 +9,6 @@ import javax.websocket.OnOpen;
 import javax.websocket.Session;
 import javax.websocket.server.ServerEndpoint;
 import org.codehaus.jackson.map.ObjectMapper;
-//import org.codehaus.jackson.map.ObjectMapper;
 
 @ServerEndpoint("/ws")
 public class WsTest {

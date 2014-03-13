@@ -29,8 +29,6 @@ public class DataSimultor implements Startable {
 
     @Override
     public DataSimultor start() {
-//        AtomicInteger ai = new AtomicInteger();
-//        AtomicLong al = new AtomicLong();
         final ThreadLocalRandom random = ThreadLocalRandom.current();
         HashMap<Integer, Pm> pms = new HashMap<>();
         HashMap<Integer, Target> tgts = new HashMap<>();
@@ -47,18 +45,6 @@ public class DataSimultor implements Startable {
                 final Pm pm = generateRandomPm(random, pmId, new Date(), randomTgtId);
                 pms.put(pmId, pm);
                 pmOuput.publish(new ChangeEvent<>(ChangeEvent.ChangeType.update, pm));
-
-                
-//
-//                long start = System.nanoTime();
-//                
-//                al.addAndGet(System.nanoTime() - start);
-//                int get = ai.incrementAndGet();
-//                if (get % 10000 == 0) {
-//                    System.out.println("average " + ((double) al.get() / (double) ai.get()));
-//                    al.set(0);
-//                    ai.set(0);
-//                }
             } catch (Exception e) {
                 e.printStackTrace();
             }

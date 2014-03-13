@@ -6,7 +6,6 @@
 
 package co.eitan101.examples;
 
-import com.google.common.collect.ImmutableList;
 import db.data.Pm;
 import db.data.Target;
 import db.infra.CacheData;
@@ -34,9 +33,8 @@ public class FullPmQueryServerExample {
         final DataSimultor sim = new DataSimultor(exec).start(); 
         CacheData<Integer, Pm> pmCache = new CacheData<>(sim.getPmOuput(), exec).start();
         CacheData<Integer, Target> targetCache = new CacheData<>(sim.getTgtOuput(), exec).start();     
-        Denormalizer<Integer, Pm> denormlizedPm = new Denormalizer<>(pmCache, ImmutableList.of(
-                new Denormalizer.SubEntityDef<Pm, Integer, Target>("target", Target.class, targetCache, pm->pm.getTargetId()))).start();   
-//        QueryServerExample fullPm = new QueryServerExample(exec, sim.getPmOuput(), sim.getTgtOuput()).start();
+        Denormalizer<Integer, Pm> denormlizedPm = new Denormalizer<>(pmCache, 
+                new Denormalizer.SubEntityDef<Pm, Integer, Target>("target", Target.class, targetCache, pm->pm.getTargetId())).start();   
         return new QueryServer<>(denormlizedPm.output());        
     }            
 }

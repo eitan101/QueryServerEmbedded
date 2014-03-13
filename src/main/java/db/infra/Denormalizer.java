@@ -1,12 +1,11 @@
 package db.infra;
 
-import com.google.common.collect.ImmutableCollection;
 import com.google.common.collect.ImmutableMap;
 import events.ChangePair;
 import events.EventsStream;
-import events.Pair;
 import events.PushStream;
 import events.StreamRegisterer;
+import java.util.Arrays;
 import java.util.List;
 import java.util.function.Consumer;
 import java.util.function.Function;
@@ -24,13 +23,13 @@ public class Denormalizer<K, V extends Indexed<K>> {
     private final Function<V, DenormalizedEntity<V>> denormFunction;
     private final List<ChildHandler> childHandlers;
 
-    public Denormalizer(IReadCache<K, V> parentCache, ImmutableCollection<SubEntityDef> subEntitiesDefs) {
+    public Denormalizer(IReadCache<K, V> parentCache, SubEntityDef... subEntitiesDefs) {
 
         this.parentCache = parentCache;
         this.childChangeOuput = new PushStream<>();
-        this.childHandlers = subEntitiesDefs.stream().map(def -> new ChildHandler(def)).collect(Collectors.toList());
+        this.childHandlers = Arrays.asList(subEntitiesDefs).stream().map(def -> new ChildHandler(def)).collect(Collectors.toList());
         this.denormFunction = normParent -> normParent == null ? null
-                : new DenormalizedEntity<>(normParent,  ImmutableMap.copyOf(subEntitiesDefs.stream().collect(Collectors.toMap(def -> def.name, def -> def.cache.get(def.indexer.apply(normParent))))));
+                : new DenormalizedEntity<>(normParent,  ImmutableMap.copyOf(Arrays.asList(subEntitiesDefs).stream().collect(Collectors.toMap(def -> def.name, def -> def.cache.get(def.indexer.apply(normParent))))));
         this.output = new StreamRegisterer<ChangePair<DenormalizedEntity<V>>>() {
             private Consumer<ChangePair<V>> SubEntityAdder;
 

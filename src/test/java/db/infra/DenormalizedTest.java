@@ -1,3 +1,5 @@
+package db.infra;
+
 /*
  * To change this license header, choose License Headers in Project Properties.
  * To change this template file, choose Tools | Templates
@@ -13,19 +15,15 @@ import events.ChangePair;
 import db.infra.DenormalizedEntity;
 import events.EventsStream;
 import events.PushStream;
-import events.Utils;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.List;
 import java.util.concurrent.ExecutorService;
-import java.util.stream.Collectors;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import static org.junit.Assert.*;
-import queryserver.QueryServerExample;
 
 /**
  *
