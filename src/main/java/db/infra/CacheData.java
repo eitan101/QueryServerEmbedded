@@ -1,5 +1,6 @@
 package db.infra;
 
+import events.ChangePair;
 import events.EventsStream;
 import events.Pair;
 import events.PushStream;
@@ -14,20 +15,20 @@ import java.util.function.Consumer;
 public class CacheData<K, V extends Indexed<K>> implements IReadCache<K,V> {
 
     ConcurrentHashMap<K, V> map;
-    PushStream<Pair<V, V>> output;
+    PushStream<ChangePair<V>> output;
 
     Consumer<ChangeEvent<V>> inputConsumer;
     private final EventsStream<ChangeEvent<V>> updatesStream;
 
     public CacheData(EventsStream<ChangeEvent<V>> updatesStream,ExecutorService exec) {
         map = new ConcurrentHashMap<>();
-        output  = new PushStream<Pair<V, V>>() {
+        output  = new PushStream<ChangePair<V>>() {
             @Override
-            public void register(Consumer<Pair<V, V>> c) {                
+            public void register(Consumer<ChangePair<V>> c) {                
                 exec.execute(() -> {
                     System.out.println("registering by "+this);
                     map.values().stream().forEach(
-                            v->c.accept(new Pair(null,v))
+                            v->c.accept(new ChangePair<>(null,v))
                     );
                     super.register(c);
                 });
@@ -37,10 +38,10 @@ public class CacheData<K, V extends Indexed<K>> implements IReadCache<K,V> {
         this.inputConsumer = t -> {
             switch (t.getType()) {
                 case update:
-                    output.publish(new Pair<>(map.put(t.getEntity().getId(), t.getEntity()), t.getEntity()));
+                    output.publish(new ChangePair<>(map.put(t.getEntity().getId(), t.getEntity()), t.getEntity()));
                     break;
                 case delete:
-                    output.publish(new Pair<>(map.remove(t.getEntity().getId()), null));
+                    output.publish(new ChangePair<>(map.remove(t.getEntity().getId()), null));
                     break;
                 default:
                     throw new RuntimeException();
@@ -60,7 +61,7 @@ public class CacheData<K, V extends Indexed<K>> implements IReadCache<K,V> {
 
 
     @Override
-    public EventsStream<Pair<V, V>> getOutput() {
+    public EventsStream<ChangePair<V>> getOutput() {
         return output.registerThrough();
     }
 

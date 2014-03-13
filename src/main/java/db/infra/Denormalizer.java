@@ -33,12 +33,12 @@ public class Denormalizer<K, V extends Indexed<K>> {
         this.denormFunction = normParent -> new DenormalizedEntity<>(normParent, normParent == null ? null
                 : ImmutableMap.copyOf(subEntitiesDefs.stream().collect(Collectors.toMap(def -> def.name, def -> def.cache.get(def.indexer.apply(normParent))))));
         this.output = new StreamRegisterer<ChangePair<DenormalizedEntity<V>>>() {
-            private Consumer<Pair<V, V>> SubEntityAdder;
+            private Consumer<ChangePair<V>> SubEntityAdder;
 
             @Override
             public void register(Consumer<ChangePair<DenormalizedEntity<V>>> c) {
                 SubEntityAdder = parentChange -> c.accept(
-                        new ChangePair<>(denormFunction.apply(parentChange.getFirst()), denormFunction.apply(parentChange.getSecond())));
+                        new ChangePair<>(denormFunction.apply(parentChange.getOld()), denormFunction.apply(parentChange.getNew())));
                 parentCache.getOutput().register(SubEntityAdder);
                 childChangeOuput.register(c);
             }
@@ -67,18 +67,18 @@ public class Denormalizer<K, V extends Indexed<K>> {
     private class ChildHandler<K2, V2 extends Indexed<K2>> {
 
         private final Index<K, V, K2> index;
-        private final Consumer<Pair<V2, V2>> childChangeInput;
+        private final Consumer<ChangePair<V2>> childChangeInput;
         private final IReadCache<K2, V2> childCache;
 
         public ChildHandler(SubEntityDef<V, K2, V2> def) {
             this.childCache = def.cache;
             this.index = new Index<>(def.indexer);
-            this.childChangeInput = (Pair<V2, V2> childChange) -> {
-                K2 childKey = childChange.getFirst() != null ? childChange.getFirst().getId() : childChange.getSecond().getId();
+            this.childChangeInput = (ChangePair<V2> childChange) -> {
+                K2 childKey = childChange.getOld()!= null ? childChange.getOld().getId() : childChange.getNew().getId();
                 index.getAll(childKey).stream().forEach((K parentKey) -> {
                     DenormalizedEntity<V> parentDenorm = denormFunction.apply(parentCache.get(parentKey));
-                    childChangeOuput.publish(new ChangePair<>(parentDenorm.replace(def.name, childChange.getFirst()),
-                            parentDenorm.replace(def.name, childChange.getSecond())));
+                    childChangeOuput.publish(new ChangePair<>(parentDenorm.replace(def.name, childChange.getOld()),
+                            parentDenorm.replace(def.name, childChange.getNew())));
                 });
             };
         }

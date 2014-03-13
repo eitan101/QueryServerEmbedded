@@ -5,10 +5,12 @@
  */
 package events;
 
+import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Predicate;
+import java.util.stream.Stream;
 
 /**
  *
@@ -30,7 +32,11 @@ public interface StreamRegisterer<T1> extends EventsStream<T1> {
 
             @Override
             public void unRegister(Consumer<T2> c) {
-                StreamRegisterer.this.unRegister(handlers.get(c));
+                if (c==null) {
+                    handlers.values().stream().forEach(handler->StreamRegisterer.this.unRegister(handler));
+                    handlers.clear();
+                } else 
+                    StreamRegisterer.this.unRegister(handlers.remove(c));
             }
         };
     }
@@ -54,7 +60,11 @@ public interface StreamRegisterer<T1> extends EventsStream<T1> {
 
             @Override
             public void unRegister(Consumer<T1> c) {
-                StreamRegisterer.this.unRegister(handlers.remove(c));
+                if (c==null) {
+                    handlers.keySet().stream().forEach(handler->StreamRegisterer.this.unRegister(handler));
+                    handlers.clear();
+                } else
+                    StreamRegisterer.this.unRegister(handlers.remove(c));
             }
         };
     }
