@@ -17,6 +17,6 @@ public class ChangePair<V> {
 
     @Override
     public String toString() {
-        return pair.toString();
+        return "ChangePair{" + "old=" + pair.getFirst() + ", new=" + pair.getSecond()+ '}';
     }
 }

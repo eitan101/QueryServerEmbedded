@@ -2,8 +2,8 @@ package db.infra;
 
 import events.ChangePair;
 import events.EventsStream;
-import events.Pair;
 import events.PushStream;
+import java.lang.reflect.ParameterizedType;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ExecutorService;
 import java.util.function.Consumer;
@@ -26,7 +26,7 @@ public class CacheData<K, V extends Indexed<K>> implements IReadCache<K,V> {
             @Override
             public void register(Consumer<ChangePair<V>> c) {                
                 exec.execute(() -> {
-                    System.out.println("registering by "+this);
+                    System.out.println("registering to cache "+c);
                     map.values().stream().forEach(
                             v->c.accept(new ChangePair<>(null,v))
                     );

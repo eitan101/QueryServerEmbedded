@@ -4,30 +4,23 @@
  * and open the template in the editor.
  */
 
-import com.google.common.collect.ImmutableList;
 import com.google.common.util.concurrent.MoreExecutors;
 import db.data.Pm;
 import db.data.Target;
 import db.infra.CacheData;
 import db.infra.ChangeEvent;
-import db.infra.Denormalizer;
-import events.DenormalizedEntity;
 import events.EventsStream;
 import events.PushStream;
-import events.Utils;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.List;
 import java.util.concurrent.ExecutorService;
-import java.util.stream.Collectors;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import static org.junit.Assert.*;
-import queryserver.QueryServer;
-import queryserver.QueryServerExample;
+import db.infra.QueryServer;
 
 /**
  *

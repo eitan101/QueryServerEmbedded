@@ -1,9 +1,4 @@
 <!DOCTYPE html>
-<!--
-To change this license header, choose License Headers in Project Properties.
-To change this template file, choose Tools | Templates
-and open the template in the editor.
--->
 <html>
     <head>
         <title>Glx Dissemination Test</title>
@@ -45,12 +40,10 @@ and open the template in the editor.
             }
             var count = 0;
             function onMessage(evt) {
-    //    if (evt.data.indexOf("no data")== -1)
-//                printAndScroll("output", "\n"+evt.data);
-//                return;
                 var ans = eval("(" + evt.data + ")");
-//                console.log(ans);
-                var pm = ans.entity;
+                var pm = ans.entity.parent;
+                var target = ans.entity.subEntities.target;
+                
                 var elm = document.getElementById("pm-"+pm.id);                
                 if (ans.type==="delete") {
                     elm.parentNode.removeChild(elm);                    
@@ -60,14 +53,8 @@ and open the template in the editor.
                         elm.setAttribute("id", "pm-"+pm.id);;
                         document.getElementById("table").appendChild(elm);
                     }
-                    elm.innerHTML = pm.id + " " + pm.name+ " " + pm.targetId;// + " " + ans.entity.second.name;
-                }
-              
-                
-    //    else {
-    //        if ((++count % 500) ==0)
-    //        printAndScroll("output","\nResponse500: " + evt.data.substring(20)+ "...");    
-    //    }
+                    elm.innerHTML = pm.id + " " + pm.name+ " " + pm.targetId + " " + target.name;
+                }              
             }
             function onError(evt) {
                 printAndScroll("output", "\nError: " + evt.data);

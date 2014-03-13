@@ -15,6 +15,7 @@ public class Target implements Indexed<Integer>{
 
     public static int MAX_TARGETS = 1000;
     public static int TARGET_FIELDS = 20;
+    public static Target empty = new Target(0, null, "");
 
     int id;
     int[] fields;
@@ -40,5 +41,10 @@ public class Target implements Indexed<Integer>{
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    @Override
+    public String toString() {
+        return "Target{" + "id=" + id + ", fields=" + fields + ", name=" + name + '}';
     }
 }

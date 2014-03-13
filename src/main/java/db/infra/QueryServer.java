@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package queryserver;
+package db.infra;
 
 import db.infra.ChangeEvent;
 import events.ChangePair;

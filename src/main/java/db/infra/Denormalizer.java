@@ -3,7 +3,6 @@ package db.infra;
 import com.google.common.collect.ImmutableCollection;
 import com.google.common.collect.ImmutableMap;
 import events.ChangePair;
-import events.DenormalizedEntity;
 import events.EventsStream;
 import events.Pair;
 import events.PushStream;
@@ -30,8 +29,8 @@ public class Denormalizer<K, V extends Indexed<K>> {
         this.parentCache = parentCache;
         this.childChangeOuput = new PushStream<>();
         this.childHandlers = subEntitiesDefs.stream().map(def -> new ChildHandler(def)).collect(Collectors.toList());
-        this.denormFunction = normParent -> new DenormalizedEntity<>(normParent, normParent == null ? null
-                : ImmutableMap.copyOf(subEntitiesDefs.stream().collect(Collectors.toMap(def -> def.name, def -> def.cache.get(def.indexer.apply(normParent))))));
+        this.denormFunction = normParent -> normParent == null ? null
+                : new DenormalizedEntity<>(normParent,  ImmutableMap.copyOf(subEntitiesDefs.stream().collect(Collectors.toMap(def -> def.name, def -> def.cache.get(def.indexer.apply(normParent))))));
         this.output = new StreamRegisterer<ChangePair<DenormalizedEntity<V>>>() {
             private Consumer<ChangePair<V>> SubEntityAdder;
 

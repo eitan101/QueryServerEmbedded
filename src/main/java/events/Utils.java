@@ -10,6 +10,7 @@ import db.infra.Indexed;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Function;
 import java.util.function.Predicate;
+import org.apache.commons.jxpath.JXPathContext;
 
 /**
  *
@@ -23,27 +24,13 @@ public class Utils {
             boolean newVal = t.getNew()!= null && p.test(t.getNew());
             if (old && !newVal)
                 return new ChangeEvent(ChangeEvent.ChangeType.delete, t.getOld());
-            if (!old && newVal)
+            if (newVal)
                 return new ChangeEvent(ChangeEvent.ChangeType.update, t.getNew());
             return null;
         };
     }
 
-    public static <K, V extends Indexed<K>> Function<ChangeEvent<V>, Pair<V, V>> change(ConcurrentHashMap<K, V> map) {
-        return t -> {
-            switch (t.getType()) {
-                case update:
-                    return new Pair<>(map.put(t.getEntity().getId(), t.getEntity()), t.getEntity());
-                case delete:
-                    return new Pair<>(map.remove(t.getEntity().getId()), null);
-                default:
-                    throw new RuntimeException();
-            }
-        };
-    }
-
-    public static <V> Predicate<Pair<V, V>> changeFilter(Predicate<V> p) {
-        return t -> ((t.getFirst() != null && p.test(t.getFirst()))
-                != (t.getSecond() != null && p.test(t.getSecond())));
+    public static <V> Predicate<V> xpath(String query) {
+        return t -> (boolean) JXPathContext.newContext(t).iterate(query).next();
     }
 }

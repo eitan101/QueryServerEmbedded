@@ -10,7 +10,7 @@ import db.data.Pm;
 import db.data.Target;
 import db.infra.ChangeEvent;
 import events.ChangePair;
-import events.DenormalizedEntity;
+import db.infra.DenormalizedEntity;
 import events.EventsStream;
 import events.PushStream;
 import events.Utils;
@@ -69,7 +69,18 @@ public class DenormalizedTest {
         tgtPublisher.publish(new ChangeEvent<>(ChangeEvent.ChangeType.update, new Target(1, null, "myTg")));
         pmPublisher.publish(new ChangeEvent<>(ChangeEvent.ChangeType.update, new Pm(1, "myPm", null, 1, new Date())));
         assertEquals(1, res.size());
-        assertEquals("myPm", res.get(0).getNew().getParentEntity().getName());
+        assertEquals("myPm", res.get(0).getNew().getParent().getName());
+    }
+
+
+    @Test
+    public void registerAfter() {
+        tgtPublisher.publish(new ChangeEvent<>(ChangeEvent.ChangeType.update, new Target(1, null, "myTg")));
+        pmPublisher.publish(new ChangeEvent<>(ChangeEvent.ChangeType.update, new Pm(1, "myPm", null, 1, new Date())));
+        queryOutput.register(t -> res.add(t));
+        assertEquals(1, res.size());
+        assertEquals("myPm", res.get(0).getNew().getParent().getName());
+        assertEquals(null, res.get(0).getOld());        
     }
 
     @Test
@@ -78,8 +89,8 @@ public class DenormalizedTest {
         final Target target = new Target(1, null, "target");
         final Pm subPm = new Pm(2, "IamTheSon", null, 1, new Date());
         DenormalizedEntity<Pm> de = new DenormalizedEntity<>(pm, ImmutableMap.of("main",target,"son",subPm));
-        assertEquals("target", de.getSubEntity(Target.class, "main").getName());
-        assertEquals(1, de.getSubEntity(Pm.class, "son").getTargetId());
+        assertEquals("target", de.getSubEntity(Target.class, "main").get().getName());
+        assertEquals(1, de.getSubEntity(Pm.class, "son").get().getTargetId());
     }
     
     @Test(expected=RuntimeException.class)

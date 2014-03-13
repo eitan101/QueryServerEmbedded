@@ -8,7 +8,7 @@ import com.google.common.util.concurrent.MoreExecutors;
 import db.data.Pm;
 import db.data.Target;
 import db.infra.ChangeEvent;
-import events.DenormalizedEntity;
+import db.infra.DenormalizedEntity;
 import events.EventsStream;
 import events.PushStream;
 import events.Utils;
@@ -56,9 +56,7 @@ public class DenormalizedQueryTest {
         QueryServerExample qs = new QueryServerExample(exec, pmPublisher, tgtPublisher).start();
         queryOutput = qs.getDenormlizedPm().output().
                 map(Utils.PairToChangeEvent(p ->
-                        p.getParentEntity()!= null &&
-                        p.getSubEntity(Target.class, "target") != null &&
-                        p.getSubEntity(Target.class, "target").getName().length() == 4)).
+                        p.getSubEntity(Target.class, "target").orElse(Target.empty).getName().length() == 4)).
                 filter(p -> p != null);
     }
 
@@ -72,7 +70,7 @@ public class DenormalizedQueryTest {
         tgtPublisher.publish(new ChangeEvent<>(ChangeEvent.ChangeType.update, new Target(1, null, "myTg")));
         pmPublisher.publish(new ChangeEvent<>(ChangeEvent.ChangeType.update, new Pm(1, "myPm", null, 1, new Date())));
         assertEquals(1, res.size());
-        assertEquals("myPm", res.get(0).getEntity().getParentEntity().getName());
+        assertEquals("myPm", res.get(0).getEntity().getParent().getName());
     }
 
     @Test
@@ -81,7 +79,7 @@ public class DenormalizedQueryTest {
         queryOutput.register(t -> res.add(t));
         pmPublisher.publish(new ChangeEvent<>(ChangeEvent.ChangeType.update, new Pm(1, "myPm", null, 1, new Date())));
         assertEquals(1, res.size());
-        assertEquals("myPm", res.get(0).getEntity().getParentEntity().getName());
+        assertEquals("myPm", res.get(0).getEntity().getParent().getName());
     }
 
     @Test
@@ -90,7 +88,7 @@ public class DenormalizedQueryTest {
         pmPublisher.publish(new ChangeEvent<>(ChangeEvent.ChangeType.update, new Pm(1, "myPm", null, 1, new Date())));
         queryOutput.register(t -> res.add(t));
         assertEquals(1, res.size());
-        assertEquals("myPm", res.get(0).getEntity().getParentEntity().getName());
+        assertEquals("myPm", res.get(0).getEntity().getParent().getName());
     }
 
     @Test
@@ -100,7 +98,7 @@ public class DenormalizedQueryTest {
         queryOutput.register(t -> res.add(t));
         tgtPublisher.publish(new ChangeEvent<>(ChangeEvent.ChangeType.update, new Target(1, null, "myTg")));
         assertEquals(1, res.size());
-        assertEquals("myPm", res.get(0).getEntity().getParentEntity().getName());
+        assertEquals("myPm", res.get(0).getEntity().getParent().getName());
     }
 
     @Test
@@ -111,7 +109,7 @@ public class DenormalizedQueryTest {
         queryOutput.register(t -> res.add(t));
         assertEquals(0, res.size());
         tgtPublisher.publish(new ChangeEvent<>(ChangeEvent.ChangeType.update, new Target(1, null, "myTg")));
-        List<String> pmNamesRes = res.stream().map(change -> change.getEntity().getParentEntity().getName()).collect(Collectors.toList());
+        List<String> pmNamesRes = res.stream().map(change -> change.getEntity().getParent().getName()).collect(Collectors.toList());
         assertEquals(2, res.size());
         assertTrue(pmNamesRes.contains("myPm1"));
         assertTrue(pmNamesRes.contains("myPm2"));
