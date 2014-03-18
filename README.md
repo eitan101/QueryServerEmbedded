@@ -1,7 +1,6 @@
 QueryServerEmbedded
 ===================
-run jettyServer.
-open http://localhost:8080/files
-open console and type connect()
-
-for standalone run myTest
+run with: gradlew.bat or ./gradlew
+open http://localhost:8080/
+press connect button
+For standalone run myTest
