@@ -1,6 +1,6 @@
 QueryServerEmbedded
 ===================
-run with: 
+Ensure that JAVA_HOME points to jdk8. cd to the project dir and run with: 
 
     gradlew.bat 
 or 
