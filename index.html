@@ -32,6 +32,7 @@
             }
             function onOpen(evt) {
                 printAndScroll("output", "\nConnected");
+                document.getElementById("table").innerHTML ="";
 //                document.getElementById("connButton").innerHTML = "disconnect";
             }
             function onClose(evt) {
@@ -67,6 +68,7 @@
 
     </head>
     <body>
+        <button onclick="connect()">connect</button>
         <table id="table">
         </table>
         <div id="output">TODO write content</div>

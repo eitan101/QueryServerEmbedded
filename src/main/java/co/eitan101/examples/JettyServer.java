@@ -33,11 +33,11 @@ public class JettyServer {
         rh.setResourceBase(".");
         final HandlerList handlers = new HandlerList();
         final ContextHandler resourceCtx = new ContextHandler();
-        resourceCtx.setContextPath("/files/");
+        resourceCtx.setContextPath("/");
         resourceCtx.setHandler(rh);
         ServletContextHandler wsContext = new ServletContextHandler(ServletContextHandler.SESSIONS);
         wsContext.setContextPath("/data");
-        handlers.setHandlers(new Handler[] {resourceCtx, wsContext,new DefaultHandler()});
+        handlers.setHandlers(new Handler[] { wsContext,resourceCtx,new DefaultHandler()});
         server.setHandler(handlers);
 
         try {
